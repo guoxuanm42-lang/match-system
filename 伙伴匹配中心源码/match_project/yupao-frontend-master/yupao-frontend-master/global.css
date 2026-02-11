@@ -1,0 +1,189 @@
+:root {
+    --app-bg: #f6f8fb;
+    --app-bg-2: #eef2f7;
+    --app-card: rgba(255, 255, 255, 0.92);
+    --app-card-border: rgba(37, 99, 235, 0.12);
+    --app-text: #0f172a;
+    --app-text-muted: #64748b;
+    --app-primary: #2563eb;
+    --app-primary-2: #1d4ed8;
+    --app-accent: #3b82f6;
+    --app-shadow: 0 14px 36px rgba(15, 23, 42, 0.08);
+    --app-glow: 0 0 14px rgba(59, 130, 246, 0.25);
+
+    --van-primary-color: var(--app-primary);
+    --van-success-color: #22c55e;
+    --van-warning-color: #f59e0b;
+    --van-danger-color: #ef4444;
+    --van-text-color: var(--app-text);
+    --van-text-color-2: var(--app-text-muted);
+    --van-background: var(--app-bg);
+    --van-background-2: var(--app-bg-2);
+    --van-border-color: rgba(148, 163, 184, 0.12);
+    --van-cell-background: var(--app-card);
+    --van-cell-text-color: var(--app-text);
+    --van-nav-bar-background: rgba(255, 255, 255, 0.9);
+    --van-nav-bar-title-text-color: var(--app-text);
+    --van-nav-bar-icon-color: var(--app-primary);
+    --van-tabbar-background: rgba(255, 255, 255, 0.95);
+    --van-tabbar-item-text-color: var(--app-text-muted);
+    --van-tabbar-item-active-color: var(--app-primary);
+    --van-button-primary-background: linear-gradient(135deg, #2563eb, #3b82f6);
+    --van-button-primary-border-color: transparent;
+    --van-popup-background: #ffffff;
+    --van-dialog-background: #ffffff;
+    --van-field-input-text-color: var(--app-text);
+    --van-field-placeholder-text-color: rgba(148, 163, 184, 0.7);
+}
+
+html, body, #app {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    background:
+            radial-gradient(900px 420px at 20% -10%, rgba(37, 99, 235, 0.12), transparent 55%),
+            radial-gradient(800px 420px at 85% -5%, rgba(56, 189, 248, 0.10), transparent 50%),
+            linear-gradient(180deg, #f2f6fb 0%, #eef3f9 60%, #eaf0f7 100%);
+    background-image:
+            linear-gradient(rgba(148, 163, 184, 0.14) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(148, 163, 184, 0.14) 1px, transparent 1px),
+            radial-gradient(900px 420px at 20% -10%, rgba(37, 99, 235, 0.12), transparent 55%),
+            radial-gradient(800px 420px at 85% -5%, rgba(56, 189, 248, 0.10), transparent 50%),
+            linear-gradient(180deg, #f2f6fb 0%, #eef3f9 60%, #eaf0f7 100%);
+    background-size: 40px 40px, 40px 40px, auto, auto, auto;
+    color: var(--app-text);
+    font-family: "Inter", "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+}
+
+.app-content {
+    min-height: calc(100vh - 96px);
+    background: transparent;
+}
+
+.page-container {
+    max-width: 860px;
+    margin: 0 auto;
+}
+
+.app-title {
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: 0.3px;
+}
+
+.van-nav-bar {
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(37, 99, 235, 0.12);
+    box-shadow: var(--app-shadow);
+}
+
+.van-nav-bar__title {
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: 0.4px;
+}
+
+.van-cell-group--inset {
+    margin: 16px 0;
+}
+
+.van-tabbar {
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(37, 99, 235, 0.12);
+    box-shadow: var(--app-shadow);
+}
+
+.van-cell,
+.van-card,
+.van-cell-group--inset {
+    background: var(--app-card);
+    border: 1px solid var(--app-card-border);
+    border-radius: 16px;
+    box-shadow: var(--app-shadow);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.van-cell-group--inset {
+    padding: 6px 0;
+}
+
+.van-card {
+    overflow: hidden;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .van-card:hover,
+    .van-cell-group--inset:hover,
+    .van-cell:hover {
+        transform: translateY(-2px) scale(1.01);
+        border-color: rgba(37, 99, 235, 0.35);
+        box-shadow:
+                0 0 0 1px rgba(37, 99, 235, 0.35),
+                0 0 12px rgba(59, 130, 246, 0.2),
+                var(--app-shadow);
+    }
+}
+
+.van-card__thumb img {
+    border-radius: 12px;
+    box-shadow: var(--app-glow);
+}
+
+.van-card__thumb {
+    width: 112px;
+    height: 112px;
+}
+
+.van-card__content {
+    padding: 8px 0;
+}
+
+.van-card__title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--app-text);
+}
+
+.van-card__desc {
+    color: var(--app-text-muted);
+}
+
+.van-field__control {
+    color: var(--app-text);
+}
+
+.van-button--primary {
+    box-shadow: var(--app-glow);
+}
+
+.van-button {
+    border-radius: 14px;
+}
+
+.van-button--round {
+    border-radius: 20px;
+}
+
+.van-search {
+    background: transparent;
+}
+
+.van-search__content {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(37, 99, 235, 0.16);
+    border-radius: 10px;
+}
+
+.add-button {
+    position: fixed;
+    bottom: 60px;
+    width: 52px;
+    right: 12px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    box-shadow: var(--app-glow);
+    border: 1px solid rgba(37, 99, 235, 0.35);
+}
