@@ -9,14 +9,17 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 /**
  * RedisTemplate 配置
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author Ethan
  */
 @Configuration
 public class RedisTemplateConfig {
 
-    // https://space.bilibili.com/12890453/
-
+    /**
+     * 创建 RedisTemplate Bean（key 为字符串，value 为对象）。
+     *
+     * @param connectionFactory Redis 连接工厂
+     * @return RedisTemplate 实例
+     */
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();

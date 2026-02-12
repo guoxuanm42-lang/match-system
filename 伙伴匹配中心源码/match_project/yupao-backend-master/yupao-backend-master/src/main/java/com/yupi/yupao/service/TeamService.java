@@ -12,65 +12,63 @@ import com.yupi.yupao.model.vo.TeamUserVO;
 import java.util.List;
 
 /**
- * 队伍服务
+ * 队伍服务（队伍的创建、查询、加入、退出、解散等核心业务）。
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author Ethan
  */
 public interface TeamService extends IService<Team> {
 
     /**
-     * 创建队伍
+     * 创建队伍。
      *
-     * @param team
-     * @param loginUser
-     * @return
+     * @param team 队伍信息（名称、描述、人数上限、状态等）
+     * @param loginUser 当前登录用户（创建者）
+     * @return 新创建的队伍 id
      */
     long addTeam(Team team, User loginUser);
 
     /**
-     * 搜索队伍
+     * 查询队伍列表（支持筛选）。
      *
-     * @param teamQuery
-     * @param isAdmin
-     * @return
+     * @param teamQuery 查询条件
+     * @param isAdmin 是否管理员（管理员可查询更多状态的队伍）
+     * @return 队伍列表（包含队长信息等扩展字段）
      */
     List<TeamUserVO> listTeams(TeamQuery teamQuery, boolean isAdmin);
 
     /**
-     * 更新队伍
+     * 更新队伍信息。
      *
-     * @param teamUpdateRequest
-     * @param loginUser
-     * @return
+     * @param teamUpdateRequest 更新队伍请求体
+     * @param loginUser 当前登录用户
+     * @return true 表示更新成功
      */
     boolean updateTeam(TeamUpdateRequest teamUpdateRequest, User loginUser);
 
     /**
-     * 加入队伍
+     * 加入队伍。
      *
-     * @param teamJoinRequest
-     * @return
+     * @param teamJoinRequest 加入队伍请求体
+     * @param loginUser 当前登录用户
+     * @return true 表示加入成功
      */
     boolean joinTeam(TeamJoinRequest teamJoinRequest, User loginUser);
 
     /**
-     * 退出队伍
+     * 退出队伍。
      *
-     * @param teamQuitRequest
-     * @param loginUser
-     * @return
+     * @param teamQuitRequest 退出队伍请求体
+     * @param loginUser 当前登录用户
+     * @return true 表示退出成功
      */
     boolean quitTeam(TeamQuitRequest teamQuitRequest, User loginUser);
 
-    // [加入学习圈](https://t.zsxq.com/0emozsIJh) 从 0 到 1 项目实战，经验拉满！10+ 原创项目手把手教程、1000+ 项目经验笔记、7 日项目提升训练营、60+ 编程经验分享直播
-
     /**
-     * 删除（解散）队伍
+     * 删除（解散）队伍。
      *
-     * @param id
-     * @param loginUser
-     * @return
+     * @param id 队伍 id
+     * @param loginUser 当前登录用户
+     * @return true 表示删除成功
      */
     boolean deleteTeam(long id, User loginUser);
 }

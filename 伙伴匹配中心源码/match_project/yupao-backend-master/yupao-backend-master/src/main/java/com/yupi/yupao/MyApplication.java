@@ -6,20 +6,22 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
- * 启动类
+ * 启动类（Spring Boot 入口）。
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author Ethan
  */
 @SpringBootApplication
 @MapperScan("com.yupi.yupao.mapper")
 @EnableScheduling
 public class MyApplication {
 
+    /**
+     * 应用启动入口。
+     *
+     * @param args 启动参数
+     */
     public static void main(String[] args) {
         SpringApplication.run(MyApplication.class, args);
     }
 
 }
-
-// 作_者 [程序员_鱼皮](https://yupi.icu/)

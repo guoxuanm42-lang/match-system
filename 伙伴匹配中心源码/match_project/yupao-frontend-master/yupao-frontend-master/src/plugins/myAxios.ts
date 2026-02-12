@@ -1,10 +1,28 @@
-import axios, {AxiosInstance} from "axios";
+/**
+ * 模块用途：封装项目统一的 Axios 实例，用于前端调用后端 /api 接口。
+ *
+ * 交互：页面/组件通过 myAxios 发起请求；当后端返回未登录/无权限时自动跳转登录页并携带 redirect。
+ *
+ * 数据来源：运行环境 import.meta.env.DEV 决定 baseURL；响应数据遵循后端统一返回结构（code/data/description）。
+ */
+import axios, { AxiosInstance } from "axios";
+
+export type ApiResponse<T = any> = {
+  code: number;
+  data: T;
+  description?: string;
+};
+
+type MyAxiosInstance = Omit<AxiosInstance, 'get' | 'post'> & {
+  get<T = any>(url: string, config?: any): Promise<ApiResponse<T>>;
+  post<T = any>(url: string, data?: any, config?: any): Promise<ApiResponse<T>>;
+};
 
 const isDev = import.meta.env.DEV;
 
-const myAxios: AxiosInstance = axios.create({
+const myAxios = axios.create({
     baseURL: isDev ? 'http://localhost:8080/api' : '线上地址',
-});
+}) as MyAxiosInstance;
 
 myAxios.defaults.withCredentials = true; // 配置为true
 

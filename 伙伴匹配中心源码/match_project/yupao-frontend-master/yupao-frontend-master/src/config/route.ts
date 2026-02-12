@@ -1,4 +1,10 @@
-// 定义一些路由
+/**
+ * 模块用途：集中定义前端路由表，用于 Vue Router 注册页面与标题信息。
+ *
+ * 交互：用户通过底部导航/按钮跳转触发路由切换；布局组件会基于路由元信息展示标题。
+ *
+ * 数据来源：页面组件来自 src/pages；路径与标题为本地静态配置。
+ */
 import Index from "../pages/Index.vue";
 import Team from "../pages/TeamPage.vue";
 import UserPage from "../pages/UserPage.vue";

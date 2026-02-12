@@ -41,13 +41,20 @@
       </div>
       <div class="login-footer">
         已有账号？
-        <span class="login-link" @click="toLogin">去登录</span>
+        <router-link class="login-link" to="/user/login">去登录</router-link>
       </div>
     </van-form>
   </div>
 </template>
 
 <script setup lang="ts">
+/**
+ * 模块用途：用户注册页，提交账号信息创建新用户并引导登录。
+ *
+ * 交互：提交表单触发注册请求；成功 Toast 并跳转登录页；失败 Toast 展示后端返回的 description。
+ *
+ * 数据来源：表单输入（账号、密码、星球编号）；后端接口 POST /user/register。
+ */
 import {ref} from "vue";
 import {useRouter} from "vue-router";
 import myAxios from "../plugins/myAxios";
@@ -60,6 +67,15 @@ const planetCode = ref('');
 const userPassword = ref('');
 const checkPassword = ref('');
 
+/**
+ * 提交注册表单。
+ *
+ * 交互：用户点击注册触发；成功 Toast 并跳转登录页；失败 Toast 提示原因。
+ *
+ * 数据来源：表单输入；后端 POST /user/register。
+ *
+ * @returns Promise<void>
+ */
 const onSubmit = async () => {
   const res = await myAxios.post('/user/register', {
     userAccount: userAccount.value,
@@ -75,7 +91,14 @@ const onSubmit = async () => {
   }
 };
 
-const toLogin = () => {
+/**
+ * 跳转到登录页。
+ *
+ * 交互：用户点击“去登录”触发，路由跳转到 /user/login。
+ *
+ * 数据来源：本地路由配置。
+ */
+const toLogin = (_event?: MouseEvent) => {
   router.push('/user/login');
 };
 </script>

@@ -13,8 +13,7 @@ import java.util.List;
 /**
  * 用户服务测试
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author Ethan
  */
 @SpringBootTest
 public class UserServiceTest {
@@ -22,10 +21,13 @@ public class UserServiceTest {
     @Resource
     private UserService userService;
 
+    /**
+     * 测试新增用户（基础增删改查验证）。
+     */
     @Test
     public void testAddUser() {
         User user = new User();
-        user.setUsername("本项目_所属 [程序员鱼皮](https://t.zsxq.com/0emozsIJh)\n");
+        user.setUsername("test-user");
         user.setUserAccount("123");
         user.setAvatarUrl("https://636f-codenav-8grj8px727565176-1256524210.tcb.qcloud.la/img/logo.png");
         user.setGender(0);
@@ -37,6 +39,9 @@ public class UserServiceTest {
         Assertions.assertTrue(result);
     }
 
+    /**
+     * 测试更新用户（基础增删改查验证）。
+     */
     @Test
     public void testUpdateUser() {
         User user = new User();
@@ -52,12 +57,18 @@ public class UserServiceTest {
         Assertions.assertTrue(result);
     }
 
+    /**
+     * 测试删除用户（基础增删改查验证）。
+     */
     @Test
     public void testDeleteUser() {
         boolean result = userService.removeById(1L);
         Assertions.assertTrue(result);
     }
 
+    /**
+     * 测试按 id 获取用户（基础增删改查验证）。
+     */
     @Test
     public void testGetUser() {
         User user = userService.getById(1L);
@@ -95,6 +106,9 @@ public class UserServiceTest {
         Assertions.assertEquals(-1, result);
     }
 
+    /**
+     * 测试按标签搜索用户。
+     */
     @Test
     public void testSearchUsersByTags() {
         List<String> tagNameList = Arrays.asList("java", "python");

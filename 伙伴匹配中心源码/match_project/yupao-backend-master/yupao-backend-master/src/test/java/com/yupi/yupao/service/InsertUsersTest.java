@@ -13,8 +13,7 @@ import java.util.concurrent.*;
 /**
  * 导入用户测试
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author Ethan
  */
 @SpringBootTest
 public class InsertUsersTest {
@@ -25,7 +24,7 @@ public class InsertUsersTest {
     private ExecutorService executorService = new ThreadPoolExecutor(40, 1000, 10000, TimeUnit.MINUTES, new ArrayBlockingQueue<>(10000));
 
     /**
-     * 批量插入用户
+     * 批量插入用户（测试用）。
      */
     @Test
     public void doInsertUsers() {
@@ -35,7 +34,7 @@ public class InsertUsersTest {
         List<User> userList = new ArrayList<>();
         for (int i = 0; i < INSERT_NUM; i++) {
             User user = new User();
-            user.setUsername("原_创 【鱼_皮】https://t.zsxq.com/0emozsIJh");
+            user.setUsername("test-batch-user");
             user.setUserAccount("fakeyupi");
             user.setAvatarUrl("https://636f-codenav-8grj8px727565176-1256524210.tcb.qcloud.la/img/logo.png");
             user.setGender(0);
@@ -55,7 +54,7 @@ public class InsertUsersTest {
     }
 
     /**
-     * 并发批量插入用户
+     * 并发批量插入用户（测试用）。
      */
     @Test
     public void doConcurrencyInsertUsers() {

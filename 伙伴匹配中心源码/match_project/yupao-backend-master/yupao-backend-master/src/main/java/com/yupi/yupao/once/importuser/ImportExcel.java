@@ -5,15 +5,16 @@ import com.alibaba.excel.EasyExcel;
 import java.util.List;
 
 /**
- * 导入 Excel
+ * 导入 Excel 示例（读取 Excel 并输出解析结果）。
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author Ethan
  */
 public class ImportExcel {
 
     /**
-     * 读取数据
+     * 读取数据（示例入口）。
+     *
+     * @param args 启动参数
      */
     public static void main(String[] args) {
         // todo 记得改为自己的测试文件
@@ -23,20 +24,18 @@ public class ImportExcel {
     }
 
     /**
-     * 监听器读取
+     * 监听器读取（按行回调处理）。
      *
-     * @param fileName
+     * @param fileName Excel 文件路径
      */
     public static void readByListener(String fileName) {
         EasyExcel.read(fileName, XingQiuTableUserInfo.class, new TableListener()).sheet().doRead();
     }
 
-    // [加入我们](https://yupi.icu) 从 0 到 1 项目实战，经验拉满！10+ 原创项目手把手教程、7 日项目提升训练营、1000+ 项目经验笔记、60+ 编程经验分享直播
-
     /**
-     * 同步读
+     * 同步读取（一次性把数据读入内存）。
      *
-     * @param fileName
+     * @param fileName Excel 文件路径
      */
     public static void synchronousRead(String fileName) {
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet 同步读取会自动finish

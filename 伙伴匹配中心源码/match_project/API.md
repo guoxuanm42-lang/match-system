@@ -44,6 +44,15 @@
 
 返回：`data` 为注册用户 ID。
 
+```json
+{
+  "code": 0,
+  "data": 123,
+  "message": "ok",
+  "description": ""
+}
+```
+
 ### 登录
 
 - `POST /user/login`
@@ -59,11 +68,41 @@
 
 返回：`data` 为用户信息（含登录态）。
 
+```json
+{
+  "code": 0,
+  "data": {
+    "id": 1,
+    "username": "string",
+    "userAccount": "string",
+    "avatarUrl": "string",
+    "gender": 0,
+    "phone": "string",
+    "email": "string",
+    "userStatus": 0,
+    "userRole": 0,
+    "planetCode": "string",
+    "tags": "[]"
+  },
+  "message": "ok",
+  "description": ""
+}
+```
+
 ### 退出登录
 
 - `POST /user/logout`
 
 返回：`data` 为整型结果。
+
+```json
+{
+  "code": 0,
+  "data": 1,
+  "message": "ok",
+  "description": ""
+}
+```
 
 ### 当前登录用户
 
@@ -71,11 +110,48 @@
 
 返回：`data` 为当前用户信息。
 
+```json
+{
+  "code": 0,
+  "data": {
+    "id": 1,
+    "username": "string",
+    "userAccount": "string",
+    "avatarUrl": "string",
+    "gender": 0,
+    "phone": "string",
+    "email": "string",
+    "userStatus": 0,
+    "userRole": 0,
+    "planetCode": "string",
+    "tags": "[]"
+  },
+  "message": "ok",
+  "description": ""
+}
+```
+
 ### 搜索用户（管理员）
 
 - `GET /user/search?username=xxx`
 
 返回：`data` 为用户列表。
+
+```json
+{
+  "code": 0,
+  "data": [
+    {
+      "id": 1,
+      "username": "string",
+      "userAccount": "string",
+      "avatarUrl": "string"
+    }
+  ],
+  "message": "ok",
+  "description": ""
+}
+```
 
 ### 按标签搜索用户
 
@@ -83,11 +159,48 @@
 
 返回：`data` 为用户列表。
 
+```json
+{
+  "code": 0,
+  "data": [
+    {
+      "id": 1,
+      "username": "string",
+      "userAccount": "string",
+      "avatarUrl": "string"
+    }
+  ],
+  "message": "ok",
+  "description": ""
+}
+```
+
 ### 推荐用户
 
 - `GET /user/recommend?pageSize=10&pageNum=1`
 
 返回：`data` 为分页结果。
+
+```json
+{
+  "code": 0,
+  "data": {
+    "records": [
+      {
+        "id": 1,
+        "username": "string",
+        "userAccount": "string",
+        "avatarUrl": "string"
+      }
+    ],
+    "total": 0,
+    "size": 10,
+    "current": 1
+  },
+  "message": "ok",
+  "description": ""
+}
+```
 
 ### 更新用户
 
@@ -95,17 +208,55 @@
 
 请求体：`User` 对象（部分字段可选）。
 
+返回：`data` 为影响行数（int）。
+
+```json
+{
+  "code": 0,
+  "data": 1,
+  "message": "ok",
+  "description": ""
+}
+```
+
 ### 删除用户（管理员）
 
 - `POST /user/delete`
 
 请求体：`long` 类型用户 ID。
 
+返回：`data` 为布尔值。
+
+```json
+{
+  "code": 0,
+  "data": true,
+  "message": "ok",
+  "description": ""
+}
+```
+
 ### 匹配用户
 
 - `GET /user/match?num=10`
 
 返回：`data` 为匹配到的用户列表。
+
+```json
+{
+  "code": 0,
+  "data": [
+    {
+      "id": 1,
+      "username": "string",
+      "userAccount": "string",
+      "avatarUrl": "string"
+    }
+  ],
+  "message": "ok",
+  "description": ""
+}
+```
 
 ## 队伍模块
 
@@ -128,6 +279,15 @@
 
 返回：`data` 为队伍 ID。
 
+```json
+{
+  "code": 0,
+  "data": 2001,
+  "message": "ok",
+  "description": ""
+}
+```
+
 ### 更新队伍
 
 - `POST /team/update`
@@ -147,11 +307,37 @@
 
 返回：`data` 为布尔值。
 
+```json
+{
+  "code": 0,
+  "data": true,
+  "message": "ok",
+  "description": ""
+}
+```
+
 ### 队伍详情
 
 - `GET /team/get?id=1`
 
 返回：`data` 为队伍信息。
+
+```json
+{
+  "code": 0,
+  "data": {
+    "id": 1,
+    "name": "string",
+    "description": "string",
+    "maxNum": 3,
+    "expireTime": "2026-02-06T14:00:00.000Z",
+    "userId": 1,
+    "status": 0
+  },
+  "message": "ok",
+  "description": ""
+}
+```
 
 ### 队伍列表（带筛选）
 
@@ -168,11 +354,63 @@
 
 返回：`data` 为 `TeamUserVO` 列表。
 
+```json
+{
+  "code": 0,
+  "data": [
+    {
+      "id": 1,
+      "name": "string",
+      "description": "string",
+      "maxNum": 3,
+      "expireTime": "2026-02-06T14:00:00.000Z",
+      "userId": 1,
+      "status": 0,
+      "createUser": {
+        "id": 1,
+        "username": "string",
+        "avatarUrl": "string"
+      },
+      "hasJoinNum": 1,
+      "hasJoin": false
+    }
+  ],
+  "message": "ok",
+  "description": ""
+}
+```
+
 ### 队伍分页列表
 
 - `GET /team/list/page`
 
 参数同 `TeamQuery` + `PageRequest`。
+
+返回：`data` 为队伍分页结果。
+
+```json
+{
+  "code": 0,
+  "data": {
+    "records": [
+      {
+        "id": 1,
+        "name": "string",
+        "description": "string",
+        "maxNum": 3,
+        "expireTime": "2026-02-06T14:00:00.000Z",
+        "userId": 1,
+        "status": 0
+      }
+    ],
+    "total": 0,
+    "size": 10,
+    "current": 1
+  },
+  "message": "ok",
+  "description": ""
+}
+```
 
 ### 加入队伍
 
@@ -189,6 +427,15 @@
 
 返回：`data` 为布尔值。
 
+```json
+{
+  "code": 0,
+  "data": true,
+  "message": "ok",
+  "description": ""
+}
+```
+
 ### 退出队伍
 
 - `POST /team/quit`
@@ -202,6 +449,15 @@
 ```
 
 返回：`data` 为布尔值。
+
+```json
+{
+  "code": 0,
+  "data": true,
+  "message": "ok",
+  "description": ""
+}
+```
 
 ### 删除队伍
 
@@ -217,11 +473,31 @@
 
 返回：`data` 为布尔值。
 
+```json
+{
+  "code": 0,
+  "data": true,
+  "message": "ok",
+  "description": ""
+}
+```
+
 ### 我创建的队伍
 
 - `GET /team/list/my/create`
 
 参数同 `TeamQuery`。
+
+返回：`data` 为 `TeamUserVO` 列表。
+
+```json
+{
+  "code": 0,
+  "data": [],
+  "message": "ok",
+  "description": ""
+}
+```
 
 ### 我加入的队伍
 
@@ -229,3 +505,13 @@
 
 参数同 `TeamQuery`。
 
+返回：`data` 为 `TeamUserVO` 列表。
+
+```json
+{
+  "code": 0,
+  "data": [],
+  "message": "ok",
+  "description": ""
+}
+```

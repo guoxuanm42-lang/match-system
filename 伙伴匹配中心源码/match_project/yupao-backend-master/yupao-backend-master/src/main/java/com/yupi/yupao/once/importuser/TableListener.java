@@ -5,19 +5,18 @@ import com.alibaba.excel.read.listener.ReadListener;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Excel 读取监听
+ * Excel 读取监听器（用于接收 EasyExcel 的解析回调）。
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author Ethan
  */
 @Slf4j
 public class TableListener implements ReadListener<XingQiuTableUserInfo> {
 
     /**
-     * 这个每一条数据解析都会来调用
+     * 逐行解析回调（每解析到一行都会触发）。
      *
-     * @param data    one row value. Is is same as {@link AnalysisContext#readRowHolder()}
-     * @param context
+     * @param data 当前行数据
+     * @param context 解析上下文
      */
     @Override
     public void invoke(XingQiuTableUserInfo data, AnalysisContext context) {
@@ -25,9 +24,9 @@ public class TableListener implements ReadListener<XingQiuTableUserInfo> {
     }
 
     /**
-     * 所有数据解析完成了 都会来调用
+     * 解析完成回调（所有数据解析完成后触发）。
      *
-     * @param context
+     * @param context 解析上下文
      */
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {

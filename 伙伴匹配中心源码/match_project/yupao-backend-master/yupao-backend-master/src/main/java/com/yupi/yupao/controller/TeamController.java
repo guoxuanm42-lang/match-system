@@ -21,10 +21,12 @@ import com.yupi.yupao.service.UserService;
 import com.yupi.yupao.service.UserTeamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,11 +36,11 @@ import java.util.stream.Collectors;
 /**
  * 队伍接口
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author Ethan
  */
 @RestController
 @RequestMapping("/team")
+@Validated
 @Slf4j
 public class TeamController {
 
@@ -51,6 +53,16 @@ public class TeamController {
     @Resource
     private UserTeamService userTeamService;
 
+    /**
+     * 创建队伍接口。
+     *
+     * <p>用途：创建一个队伍，并返回新队伍的 id。</p>
+     *
+     * @param teamAddRequest 创建队伍请求体（队伍名称、描述、人数上限、过期时间、状态、密码等）
+     * @param request Http 请求对象（用于获取当前登录用户）
+     * @return 统一返回结构，data 为新创建的队伍 id
+     * @throws BusinessException 请求参数为空、未登录、业务校验不通过时抛出
+     */
     @PostMapping("/add")
     public BaseResponse<Long> addTeam(@RequestBody TeamAddRequest teamAddRequest, HttpServletRequest request) {
         if (teamAddRequest == null) {
@@ -63,6 +75,16 @@ public class TeamController {
         return ResultUtils.success(teamId);
     }
 
+    /**
+     * 更新队伍接口。
+     *
+     * <p>用途：更新队伍信息（例如名称、描述、过期时间、状态、密码等）。</p>
+     *
+     * @param teamUpdateRequest 更新队伍请求体（包含队伍 id 以及要更新的字段）
+     * @param request Http 请求对象（用于获取当前登录用户）
+     * @return 统一返回结构，data 为 true 表示更新成功
+     * @throws BusinessException 请求参数为空、未登录、无权限、更新失败时抛出
+     */
     @PostMapping("/update")
     public BaseResponse<Boolean> updateTeam(@RequestBody TeamUpdateRequest teamUpdateRequest, HttpServletRequest request) {
         if (teamUpdateRequest == null) {
@@ -76,6 +98,15 @@ public class TeamController {
         return ResultUtils.success(true);
     }
 
+    /**
+     * 获取队伍详情接口。
+     *
+     * <p>用途：根据队伍 id 查询队伍信息。</p>
+     *
+     * @param id 队伍 id
+     * @return 统一返回结构，data 为队伍信息
+     * @throws BusinessException id 不合法、队伍不存在时抛出
+     */
     @GetMapping("/get")
     public BaseResponse<Team> getTeamById(long id) {
         if (id <= 0) {
@@ -88,8 +119,18 @@ public class TeamController {
         return ResultUtils.success(team);
     }
 
+    /**
+     * 查询队伍列表接口（支持条件筛选）。
+     *
+     * <p>用途：按条件查询队伍列表，并附带“我是否已加入”和“已加入人数”等信息。</p>
+     *
+     * @param teamQuery 查询条件（可选：id、关键词、最大人数、队长用户 id、状态、分页参数等）
+     * @param request Http 请求对象（用于判断是否管理员、获取当前登录用户）
+     * @return 统一返回结构，data 为队伍列表（TeamUserVO）
+     * @throws BusinessException 请求参数为空时抛出
+     */
     @GetMapping("/list")
-    public BaseResponse<List<TeamUserVO>> listTeams(TeamQuery teamQuery, HttpServletRequest request) {
+    public BaseResponse<List<TeamUserVO>> listTeams(@Valid TeamQuery teamQuery, HttpServletRequest request) {
         if (teamQuery == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -122,9 +163,17 @@ public class TeamController {
         return ResultUtils.success(teamList);
     }
 
-    // todo 查询分页
+    /**
+     * 分页查询队伍接口。
+     *
+     * <p>用途：按条件分页查询队伍基础信息（未封装 TeamUserVO）。</p>
+     *
+     * @param teamQuery 查询条件（包含 pageNum / pageSize）
+     * @return 统一返回结构，data 为分页结果
+     * @throws BusinessException 请求参数为空时抛出
+     */
     @GetMapping("/list/page")
-    public BaseResponse<Page<Team>> listTeamsByPage(TeamQuery teamQuery) {
+    public BaseResponse<Page<Team>> listTeamsByPage(@Valid TeamQuery teamQuery) {
         if (teamQuery == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -136,6 +185,16 @@ public class TeamController {
         return ResultUtils.success(resultPage);
     }
 
+    /**
+     * 加入队伍接口。
+     *
+     * <p>用途：当前登录用户加入指定队伍（加密队伍需要密码）。</p>
+     *
+     * @param teamJoinRequest 加入队伍请求体（teamId + password）
+     * @param request Http 请求对象（用于获取当前登录用户）
+     * @return 统一返回结构，data 为 true 表示加入成功
+     * @throws BusinessException 请求参数为空、未登录、队伍状态不允许加入、人数已满等情况抛出
+     */
     @PostMapping("/join")
     public BaseResponse<Boolean> joinTeam(@RequestBody TeamJoinRequest teamJoinRequest, HttpServletRequest request) {
         if (teamJoinRequest == null) {
@@ -146,6 +205,16 @@ public class TeamController {
         return ResultUtils.success(result);
     }
 
+    /**
+     * 退出队伍接口。
+     *
+     * <p>用途：当前登录用户退出指定队伍；如果队长退出，会按业务逻辑转让/解散队伍。</p>
+     *
+     * @param teamQuitRequest 退出队伍请求体（teamId）
+     * @param request Http 请求对象（用于获取当前登录用户）
+     * @return 统一返回结构，data 为 true 表示退出成功
+     * @throws BusinessException 请求参数为空、未登录、未加入该队伍等情况抛出
+     */
     @PostMapping("/quit")
     public BaseResponse<Boolean> quitTeam(@RequestBody TeamQuitRequest teamQuitRequest, HttpServletRequest request) {
         if (teamQuitRequest == null) {
@@ -156,6 +225,16 @@ public class TeamController {
         return ResultUtils.success(result);
     }
 
+    /**
+     * 删除队伍接口。
+     *
+     * <p>用途：删除指定队伍（通常仅队长或管理员可操作）。</p>
+     *
+     * @param deleteRequest 删除请求体（包含队伍 id）
+     * @param request Http 请求对象（用于获取当前登录用户）
+     * @return 统一返回结构，data 为 true 表示删除成功
+     * @throws BusinessException 请求参数不合法、未登录、无权限、删除失败时抛出
+     */
     @PostMapping("/delete")
     public BaseResponse<Boolean> deleteTeam(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
@@ -172,14 +251,17 @@ public class TeamController {
 
 
     /**
-     * 获取我创建的队伍
+     * 获取我创建的队伍列表接口。
      *
-     * @param teamQuery
-     * @param request
-     * @return
+     * <p>用途：查询当前登录用户作为队长创建的队伍列表。</p>
+     *
+     * @param teamQuery 查询条件（可选；常用是分页参数）
+     * @param request Http 请求对象（用于获取当前登录用户）
+     * @return 统一返回结构，data 为队伍列表（TeamUserVO）
+     * @throws BusinessException 请求参数为空、未登录时抛出
      */
     @GetMapping("/list/my/create")
-    public BaseResponse<List<TeamUserVO>> listMyCreateTeams(TeamQuery teamQuery, HttpServletRequest request) {
+    public BaseResponse<List<TeamUserVO>> listMyCreateTeams(@Valid TeamQuery teamQuery, HttpServletRequest request) {
         if (teamQuery == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -191,14 +273,17 @@ public class TeamController {
 
 
     /**
-     * 获取我加入的队伍
+     * 获取我加入的队伍列表接口。
      *
-     * @param teamQuery
-     * @param request
-     * @return
+     * <p>用途：查询当前登录用户加入过的队伍列表。</p>
+     *
+     * @param teamQuery 查询条件（可选；常用是分页参数）
+     * @param request Http 请求对象（用于获取当前登录用户）
+     * @return 统一返回结构，data 为队伍列表（TeamUserVO）
+     * @throws BusinessException 请求参数为空、未登录时抛出
      */
     @GetMapping("/list/my/join")
-    public BaseResponse<List<TeamUserVO>> listMyJoinTeams(TeamQuery teamQuery, HttpServletRequest request) {
+    public BaseResponse<List<TeamUserVO>> listMyJoinTeams(@Valid TeamQuery teamQuery, HttpServletRequest request) {
         if (teamQuery == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -222,8 +307,6 @@ public class TeamController {
         return ResultUtils.success(teamList);
     }
 }
-
-
 
 
 

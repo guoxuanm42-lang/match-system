@@ -12,7 +12,6 @@ import com.yupi.yupao.model.domain.User;
 import com.yupi.yupao.model.vo.UserVO;
 import com.yupi.yupao.service.UserService;
 import com.yupi.yupao.mapper.UserMapper;
-import com.yupi.yupao.utils.AlgorithmUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.util.Pair;
@@ -31,10 +30,9 @@ import java.util.stream.Stream;
 import static com.yupi.yupao.constant.UserConstant.USER_LOGIN_STATE;
 
 /**
- * 用户服务实现类
+ * 用户服务实现类（提供用户注册、登录、脱敏、权限校验、标签匹配等能力）。
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author Ethan
  */
 @Service
 @Slf4j
@@ -49,6 +47,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      */
     private static final String SALT = "yupi";
 
+    /**
+     * 用户注册。
+     *
+     * <p>用途：校验账号与密码合法性，完成密码加盐加密后落库，并返回新用户 id。</p>
+     *
+     * @param userAccount 用户账号
+     * @param userPassword 用户密码
+     * @param checkPassword 校验密码
+     * @param planetCode 星球编号
+     * @return 新注册用户 id；失败时返回 -1
+     * @throws BusinessException 参数校验不通过（如账号重复）时抛出
+     */
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword, String planetCode) {
         // 1. 校验
@@ -102,8 +112,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return user.getId();
     }
 
-    // [加入编程导航](https://www.code-nav.cn/) 入门捷径+交流答疑+项目实战+求职指导，帮你自学编程不走弯路
-
+    /**
+     * 用户登录。
+     *
+     * <p>用途：校验账号密码，校验通过后在 Session 中写入登录态，并返回脱敏后的用户信息。</p>
+     *
+     * @param userAccount 用户账号
+     * @param userPassword 用户密码
+     * @param request Http 请求对象（用于写入 Session 登录态）
+     * @return 脱敏后的用户信息；校验失败或用户不存在时返回 null
+     */
     @Override
     public User userLogin(String userAccount, String userPassword, HttpServletRequest request) {
         // 1. 校验
@@ -142,10 +160,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     /**
-     * 用户脱敏
+     * 用户脱敏（过滤敏感字段）。
      *
-     * @param originUser
-     * @return
+     * @param originUser 原始用户信息
+     * @return 脱敏后的用户信息；originUser 为空时返回 null
      */
     @Override
     public User getSafetyUser(User originUser) {
@@ -169,9 +187,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     /**
-     * 用户注销
+     * 用户注销。
      *
-     * @param request
+     * <p>用途：清理 Session 中的登录态。</p>
+     *
+     * @param request Http 请求对象（用于获取 Session）
+     * @return 整型结果（一般 1 表示成功）
      */
     @Override
     public int userLogout(HttpServletRequest request) {
@@ -181,10 +202,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     /**
-     * 根据标签搜索用户（内存过滤）
+     * 根据标签搜索用户（内存过滤版）。
      *
      * @param tagNameList 用户要拥有的标签
-     * @return
+     * @return 符合标签条件的用户列表（脱敏后）
+     * @throws BusinessException 标签列表为空时抛出
      */
     @Override
     public List<User> searchUsersByTags(List<String> tagNameList) {
@@ -210,6 +232,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }).map(this::getSafetyUser).collect(Collectors.toList());
     }
 
+    /**
+     * 更新用户信息。
+     *
+     * <p>用途：管理员可更新任意用户；普通用户仅允许更新自己的信息。</p>
+     *
+     * @param user 要更新的用户信息（需包含 id）
+     * @param loginUser 当前登录用户
+     * @return 影响行数（一般 1 表示成功）
+     * @throws BusinessException 参数不合法、无权限或用户不存在时抛出
+     */
     @Override
     public int updateUser(User user, User loginUser) {
         long userId = user.getId();
@@ -229,10 +261,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return userMapper.updateById(user);
     }
 
+    /**
+     * 获取当前登录用户信息。
+     *
+     * <p>用途：从 Session 中获取登录态。</p>
+     *
+     * @param request Http 请求对象（用于获取 Session 登录态）
+     * @return 当前登录用户
+     * @throws BusinessException request 为空或未登录时抛出
+     */
     @Override
     public User getLoginUser(HttpServletRequest request) {
         if (request == null) {
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
         if (userObj == null) {
@@ -242,10 +283,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     /**
-     * 是否为管理员
+     * 判断当前请求对应的用户是否为管理员。
      *
-     * @param request
-     * @return
+     * @param request Http 请求对象
+     * @return true 表示管理员
      */
     @Override
     public boolean isAdmin(HttpServletRequest request) {
@@ -256,16 +297,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     /**
-     * 是否为管理员
+     * 判断指定用户是否为管理员。
      *
-     * @param loginUser
-     * @return
+     * @param loginUser 用户
+     * @return true 表示管理员
      */
     @Override
     public boolean isAdmin(User loginUser) {
         return loginUser != null && loginUser.getUserRole() == UserConstant.ADMIN_ROLE;
     }
 
+    /**
+     * 匹配用户（根据标签相似度返回最匹配的用户）。
+     *
+     * <p>用途：计算当前用户与其他用户标签交集数量，按交集数量从大到小取 top N。</p>
+     *
+     * @param num 匹配数量
+     * @param loginUser 当前登录用户
+     * @return 匹配到的用户列表（脱敏后）
+     */
     @Override
     public List<User> matchUsers(long num, User loginUser) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
@@ -274,8 +324,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         List<User> userList = this.list(queryWrapper);
         String tags = loginUser.getTags();
         Gson gson = new Gson();
+        if (StringUtils.isBlank(tags)) {
+            return new ArrayList<>();
+        }
         List<String> tagList = gson.fromJson(tags, new TypeToken<List<String>>() {
         }.getType());
+        if (tagList == null) {
+            tagList = new ArrayList<>();
+        }
+        Set<String> myTagSet = new HashSet<>(tagList);
         // 用户列表的下标 => 相似度
         List<Pair<User, Long>> list = new ArrayList<>();
         // 依次计算所有用户和当前用户的相似度
@@ -288,13 +345,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             }
             List<String> userTagList = gson.fromJson(userTags, new TypeToken<List<String>>() {
             }.getType());
-            // 计算分数
-            long distance = AlgorithmUtils.minDistance(tagList, userTagList);
-            list.add(new Pair<>(user, distance));
+            Set<String> otherTagSet = new HashSet<>(Optional.ofNullable(userTagList).orElse(new ArrayList<>()));
+            long sameCount = 0;
+            if (myTagSet.size() <= otherTagSet.size()) {
+                for (String tag : myTagSet) {
+                    if (otherTagSet.contains(tag)) {
+                        sameCount++;
+                    }
+                }
+            } else {
+                for (String tag : otherTagSet) {
+                    if (myTagSet.contains(tag)) {
+                        sameCount++;
+                    }
+                }
+            }
+            list.add(new Pair<>(user, sameCount));
         }
-        // 按编辑距离由小到大排序
+        // 按交集数量由大到小排序
         List<Pair<User, Long>> topUserPairList = list.stream()
-                .sorted((a, b) -> (int) (a.getValue() - b.getValue()))
+                .sorted((a, b) -> Long.compare(b.getValue(), a.getValue()))
                 .limit(num)
                 .collect(Collectors.toList());
         // 原本顺序的 userId 列表
@@ -319,7 +389,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      * 根据标签搜索用户（SQL 查询版）
      *
      * @param tagNameList 用户要拥有的标签
-     * @return
+     * @return 符合标签条件的用户列表（脱敏后）
+     * @throws BusinessException 标签列表为空时抛出
      */
     @Deprecated
     private List<User> searchUsersByTagsBySQL(List<String> tagNameList) {
@@ -337,7 +408,3 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
 }
-
-
-
-

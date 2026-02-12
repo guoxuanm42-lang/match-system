@@ -68,7 +68,13 @@
 </template>
 
 <script setup lang="ts">
-
+/**
+ * 模块用途：创建队伍页，填写队伍信息并提交创建请求。
+ *
+ * 交互：用户填写表单并提交；成功 Toast 并跳转队伍大厅；失败 Toast 提示（含未登录/后端异常等）。
+ *
+ * 数据来源：表单输入；后端接口 POST /team/add。
+ */
 import {useRouter} from "vue-router";
 import {ref} from "vue";
 import myAxios from "../plugins/myAxios";
@@ -92,7 +98,15 @@ const minDate = new Date();
 // 需要用户填写的表单数据
 const addTeamData = ref({...initFormData})
 
-// 提交
+/**
+ * 提交创建队伍表单。
+ *
+ * 交互：用户点击提交触发；成功 Toast 并跳转 /team；失败 Toast 提示。
+ *
+ * 数据来源：表单输入；后端 POST /team/add。
+ *
+ * @returns Promise<void>
+ */
 const onSubmit = async () => {
   if (!addTeamData.value.expireTime) {
     Toast.fail('请选择过期时间');

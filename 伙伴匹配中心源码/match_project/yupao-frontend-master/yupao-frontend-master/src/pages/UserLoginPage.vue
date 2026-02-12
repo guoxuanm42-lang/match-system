@@ -26,13 +26,20 @@
       </div>
       <div class="login-footer">
         没有账号？
-        <span class="login-link" @click="toRegister">去注册</span>
+        <router-link class="login-link" to="/user/register">去注册</router-link>
       </div>
     </van-form>
   </div>
 </template>
 
 <script setup lang="ts">
+/**
+ * 模块用途：用户登录页，提交账号密码完成登录并回跳到来源页面。
+ *
+ * 交互：提交表单触发登录请求；成功 Toast 并跳转 redirect（或首页）；失败 Toast 提示；可跳转注册页。
+ *
+ * 数据来源：表单输入（userAccount/userPassword）；后端接口 POST /user/login；route.query.redirect。
+ */
 import {useRoute, useRouter} from "vue-router";
 import {ref} from "vue";
 import myAxios from "../plugins/myAxios";
@@ -44,6 +51,15 @@ const route = useRoute();
 const userAccount = ref('');
 const userPassword = ref('');
 
+/**
+ * 提交登录表单。
+ *
+ * 交互：用户点击提交触发；成功 Toast 并回跳到 redirect（或首页）；失败 Toast 提示。
+ *
+ * 数据来源：表单输入；后端 POST /user/login；route.query.redirect 用于回跳。
+ *
+ * @returns Promise<void>
+ */
 const onSubmit = async () => {
   const res = await myAxios.post('/user/login', {
     userAccount: userAccount.value,
@@ -60,7 +76,14 @@ const onSubmit = async () => {
   }
 };
 
-const toRegister = () => {
+/**
+ * 跳转到注册页。
+ *
+ * 交互：用户点击“去注册”触发，路由跳转到 /user/register。
+ *
+ * 数据来源：本地路由配置。
+ */
+const toRegister = (_event?: MouseEvent) => {
   router.push('/user/register');
 };
 

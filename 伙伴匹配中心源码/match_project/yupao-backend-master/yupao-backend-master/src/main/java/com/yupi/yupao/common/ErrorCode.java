@@ -1,14 +1,11 @@
 package com.yupi.yupao.common;
 
 /**
- * 错误码
+ * 错误码枚举（用于统一定义接口返回的错误类型）。
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author Ethan
  */
 public enum ErrorCode {
-
-    // https://yupi.icu/
 
     SUCCESS(0, "ok", ""),
     PARAMS_ERROR(40000, "请求参数错误", ""),
@@ -36,14 +33,29 @@ public enum ErrorCode {
         this.description = description;
     }
 
+    /**
+     * 获取错误码的 code。
+     *
+     * @return 状态码
+     */
     public int getCode() {
         return code;
     }
 
+    /**
+     * 获取错误码的提示信息。
+     *
+     * @return 提示信息
+     */
     public String getMessage() {
         return message;
     }
 
+    /**
+     * 获取错误码的详细描述。
+     *
+     * @return 详细描述
+     */
     public String getDescription() {
         return description;
     }

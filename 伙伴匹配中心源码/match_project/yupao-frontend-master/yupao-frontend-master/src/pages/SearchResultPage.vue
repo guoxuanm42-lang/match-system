@@ -4,25 +4,52 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * 模块用途：标签搜索结果页，根据选中的标签列表查询并展示匹配用户。
+ *
+ * 交互：页面进入时自动加载结果；请求失败时 Toast 提示；列表为空时展示 Empty。
+ *
+ * 数据来源：route.query.tags（来自搜索页跳转参数）；后端接口 GET /user/search/tags（tagNameList 多值参数）。
+ */
 import {onMounted, ref} from 'vue';
 import {useRoute} from "vue-router";
 import myAxios from "../plugins/myAxios";
 import {Toast} from "vant";
-import qs from 'qs';
 import UserCardList from "../components/UserCardList.vue";
+import type {UserType} from "../models/user";
 
 const route = useRoute();
 const {tags} = route.query;
 
 const userList = ref([]);
 
-onMounted(async () => {
+/**
+ * 加载标签搜索结果。
+ *
+ * 交互：页面 onMounted 时触发；成功后更新用户列表，失败时 Toast 提示。
+ *
+ * 数据来源：GET /user/search/tags，参数 tagNameList 来自 route.query.tags。
+ *
+ * @returns Promise<void>
+ */
+const loadUserList = async () => {
   const userListData = await myAxios.get('/user/search/tags', {
     params: {
       tagNameList: tags
     },
-    paramsSerializer: params => {
-      return qs.stringify(params, {indices: false})
+    paramsSerializer: (params: any) => {
+      const searchParams = new URLSearchParams();
+      Object.keys(params).forEach((key) => {
+        const value = params[key];
+        if (Array.isArray(value)) {
+          value.forEach((item) => searchParams.append(key, String(item)));
+          return;
+        }
+        if (value !== undefined && value !== null) {
+          searchParams.append(key, String(value));
+        }
+      });
+      return searchParams.toString();
     }
   })
       .then(function (response) {
@@ -35,13 +62,17 @@ onMounted(async () => {
       })
   console.log(userListData)
   if (userListData) {
-    userListData.forEach(user => {
+    userListData.forEach((user: UserType) => {
       if (user.tags) {
         user.tags = JSON.parse(user.tags);
       }
     })
     userList.value = userListData;
   }
+}
+
+onMounted(async () => {
+  await loadUserList();
 })
 
 

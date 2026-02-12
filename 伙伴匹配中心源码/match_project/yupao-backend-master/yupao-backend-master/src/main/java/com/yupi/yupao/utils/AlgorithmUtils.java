@@ -4,20 +4,20 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * 算法工具类
+ * 算法工具类（提供一些通用算法方法）。
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author Ethan
  */
 public class AlgorithmUtils {
 
     /**
-     * 编辑距离算法（用于计算最相似的两组标签）
-     * 原理：https://blog.csdn.net/DBC_121/article/details/104198838
+     * 计算两组标签的编辑距离（值越小表示越相似）。
      *
-     * @param tagList1
-     * @param tagList2
-     * @return
+     * <p>小白理解：把两组标签看成两个“序列”，这个方法会算出把序列 A 变成序列 B 最少要改几步。</p>
+     *
+     * @param tagList1 标签列表 1
+     * @param tagList2 标签列表 2
+     * @return 编辑距离（0 表示完全相同）
      */
     public static int minDistance(List<String> tagList1, List<String> tagList2) {
         int n = tagList1.size();
@@ -50,15 +50,14 @@ public class AlgorithmUtils {
         return d[n][m];
     }
 
-    // [编程学习交流圈](https://www.code-nav.cn/) 连接万名编程爱好者，一起优秀！20000+ 小伙伴交流分享、40+ 大厂嘉宾一对一答疑、100+ 各方向编程交流群、4000+ 编程问答参考
-
     /**
-     * 编辑距离算法（用于计算最相似的两个字符串）
-     * 原理：https://blog.csdn.net/DBC_121/article/details/104198838
+     * 计算两个字符串的编辑距离（值越小表示越相似）。
      *
-     * @param word1
-     * @param word2
-     * @return
+     * <p>小白理解：把 word1 变成 word2，最少需要做多少次“增/删/改”字符的操作。</p>
+     *
+     * @param word1 字符串 1
+     * @param word2 字符串 2
+     * @return 编辑距离（0 表示完全相同）
      */
     public static int minDistance(String word1, String word2) {
         int n = word1.length();

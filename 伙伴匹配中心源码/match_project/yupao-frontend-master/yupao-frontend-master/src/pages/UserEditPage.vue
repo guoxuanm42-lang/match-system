@@ -15,7 +15,7 @@
       <div v-if="selectedTags.length === 0" class="tag-empty">请选择标签</div>
       <van-row gutter="12" class="tag-row">
         <van-col v-for="tag in selectedTags" :key="tag">
-          <van-tag closeable size="small" type="primary" @close="doClose(tag)">
+          <van-tag closeable type="primary" @close="doClose(tag)">
             {{ tag }}
           </van-tag>
         </van-col>
@@ -56,6 +56,13 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * 模块用途：用户字段编辑页，支持基础字段编辑与“标签”组合选择编辑。
+ *
+ * 交互：从上一页通过 query 传入 editKey/editName/currentValue；用户提交后调用更新接口，成功后返回上一页并 Toast 提示。
+ *
+ * 数据来源：route.query（编辑上下文）；GET /user/current 获取当前用户 id；POST /user/update 提交更新。
+ */
 import {useRoute, useRouter} from "vue-router";
 import { ref, computed } from "vue";
 import myAxios from "../plugins/myAxios";
@@ -66,9 +73,9 @@ const route = useRoute();
 const router = useRouter();
 
 const editUser = ref({
-  editKey: route.query.editKey,
-  currentValue: route.query.currentValue ?? '',
-  editName: route.query.editName,
+  editKey: String(Array.isArray(route.query.editKey) ? route.query.editKey[0] : (route.query.editKey ?? '')),
+  currentValue: String(Array.isArray(route.query.currentValue) ? route.query.currentValue[0] : (route.query.currentValue ?? '')),
+  editName: String(Array.isArray(route.query.editName) ? route.query.editName[0] : (route.query.editName ?? '')),
 })
 
 if (editUser.value.editKey === 'gender') {
@@ -121,6 +128,15 @@ const selectedTags = computed(() => {
   return tags;
 });
 
+/**
+ * 提交用户字段更新。
+ *
+ * 交互：用户点击提交触发表单提交；成功 Toast 并返回上一页；失败 Toast 提示。
+ *
+ * 数据来源：编辑上下文来自 route.query；后端 POST /user/update；tags 字段会以 JSON 字符串提交。
+ *
+ * @returns Promise<void>
+ */
 const onSubmit = async () => {
   const currentUser = await getCurrentUser();
 
@@ -161,6 +177,15 @@ const onSubmit = async () => {
   }
 };
 
+/**
+ * 从已选标签中移除一个标签。
+ *
+ * 交互：用户点击标签的关闭按钮触发；会更新单选/多选的绑定状态，从而影响最终提交的 tags。
+ *
+ * 数据来源：selectedGender/selectedGrade/selectedDirections。
+ *
+ * @param tag 要移除的标签名
+ */
 const doClose = (tag: string) => {
   if (selectedGender.value === tag) {
     selectedGender.value = '';
@@ -173,6 +198,13 @@ const doClose = (tag: string) => {
   selectedDirections.value = selectedDirections.value.filter(item => item !== tag);
 }
 
+/**
+ * 添加自定义方向标签到可选项并选中。
+ *
+ * 交互：用户点击“添加”触发；会把输入框内容加入方向选项并选中，然后清空输入框。
+ *
+ * 数据来源：customDirection（输入框）与 directionOptions/selectedDirections（本地状态）。
+ */
 const addDirection = () => {
   const val = customDirection.value.trim();
   if (!val) return;

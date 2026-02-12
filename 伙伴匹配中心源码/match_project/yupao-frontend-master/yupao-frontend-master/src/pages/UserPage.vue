@@ -11,6 +11,13 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * 模块用途：个人中心页，展示当前用户信息入口，并提供退出登录与队伍入口跳转。
+ *
+ * 交互：页面进入时加载当前用户；点击“退出登录”会调用注销接口并跳转登录页。
+ *
+ * 数据来源：GET /user/current 获取当前用户；POST /user/logout 退出登录。
+ */
 import {useRouter} from "vue-router";
 import {onMounted, ref} from "vue";
 import myAxios from "../plugins/myAxios";
@@ -37,6 +44,17 @@ onMounted(async () => {
   user.value = await getCurrentUser();
 })
 
+/**
+ * 跳转到编辑页并携带编辑字段信息。
+ *
+ * 交互：由页面上的“编辑”入口触发（目前页面主要使用 is-link 跳转，此方法可复用）。
+ *
+ * 数据来源：参数来自页面点击位置传入，最终写入 route.query。
+ *
+ * @param editKey 要编辑的字段 key
+ * @param editName 字段展示名
+ * @param currentValue 当前字段值
+ */
 const toEdit = (editKey: string, editName: string, currentValue: string) => {
   router.push({
     path: '/user/edit',
@@ -48,6 +66,15 @@ const toEdit = (editKey: string, editName: string, currentValue: string) => {
   })
 }
 
+/**
+ * 退出登录。
+ *
+ * 交互：用户点击“退出登录”触发；成功 Toast 并跳转登录页；失败 Toast 提示。
+ *
+ * 数据来源：后端 POST /user/logout。
+ *
+ * @returns Promise<void>
+ */
 const onLogout = async () => {
   const res = await myAxios.post('/user/logout');
   if (res?.code === 0) {

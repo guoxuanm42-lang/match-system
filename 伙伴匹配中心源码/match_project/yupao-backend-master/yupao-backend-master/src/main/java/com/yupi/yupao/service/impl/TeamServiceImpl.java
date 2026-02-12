@@ -41,8 +41,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * 队伍服务实现类
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author Ethan
  */
 @Service
 public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
@@ -57,6 +56,16 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
     @Resource
     private RedissonClient redissonClient;
 
+    /**
+     * 创建队伍。
+     *
+     * <p>会进行参数校验、队伍状态/密码校验、过期时间校验、以及“用户最多创建 5 个队伍”的限制校验。</p>
+     *
+     * @param team 队伍信息（名称、描述、人数上限、状态、密码、过期时间等）
+     * @param loginUser 当前登录用户（创建者）
+     * @return 新创建的队伍 id
+     * @throws BusinessException 参数不合法、未登录、创建失败等情况抛出
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public long addTeam(Team team, User loginUser) {
@@ -131,6 +140,16 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
         return teamId;
     }
 
+    /**
+     * 查询队伍列表（支持多条件筛选）。
+     *
+     * <p>默认不返回已过期队伍。非管理员无法查询私有队伍。</p>
+     *
+     * @param teamQuery 查询条件
+     * @param isAdmin 是否管理员
+     * @return 队伍列表（包含队长信息的 TeamUserVO）
+     * @throws BusinessException 非管理员查询私有队伍时抛出
+     */
     @Override
     public List<TeamUserVO> listTeams(TeamQuery teamQuery, boolean isAdmin) {
         QueryWrapper<Team> queryWrapper = new QueryWrapper<>();
@@ -205,6 +224,16 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
         return teamUserVOList;
     }
 
+    /**
+     * 更新队伍信息。
+     *
+     * <p>只有管理员或队伍创建者可以更新。加密队伍必须设置密码。</p>
+     *
+     * @param teamUpdateRequest 更新队伍请求体
+     * @param loginUser 当前登录用户
+     * @return true 表示更新成功
+     * @throws BusinessException 参数不合法、队伍不存在、无权限等情况抛出
+     */
     @Override
     public boolean updateTeam(TeamUpdateRequest teamUpdateRequest, User loginUser) {
         if (teamUpdateRequest == null) {
@@ -233,6 +262,16 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
         return this.updateById(updateTeam);
     }
 
+    /**
+     * 加入队伍。
+     *
+     * <p>会校验队伍是否过期、是否允许加入、加密队伍密码是否正确，并用分布式锁避免并发重复加入等问题。</p>
+     *
+     * @param teamJoinRequest 加入队伍请求体
+     * @param loginUser 当前登录用户
+     * @return true 表示加入成功
+     * @throws BusinessException 参数不合法、队伍已过期、密码错误、人数已满、重复加入等情况抛出
+     */
     @Override
     public boolean joinTeam(TeamJoinRequest teamJoinRequest, User loginUser) {
         if (teamJoinRequest == null) {
@@ -303,6 +342,16 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
         }
     }
 
+    /**
+     * 退出队伍。
+     *
+     * <p>如果队伍只剩 1 人会解散队伍；如果队长退出会将队长转让给下一个最早加入的成员。</p>
+     *
+     * @param teamQuitRequest 退出队伍请求体
+     * @param loginUser 当前登录用户
+     * @return true 表示退出成功
+     * @throws BusinessException 参数不合法、未加入队伍、系统错误等情况抛出
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean quitTeam(TeamQuitRequest teamQuitRequest, User loginUser) {
@@ -354,6 +403,16 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
         return userTeamService.remove(queryWrapper);
     }
 
+    /**
+     * 删除（解散）队伍。
+     *
+     * <p>只有队长可以删除队伍。删除时会先删除用户与队伍的关联关系，再删除队伍本身。</p>
+     *
+     * @param id 队伍 id
+     * @param loginUser 当前登录用户
+     * @return true 表示删除成功
+     * @throws BusinessException 队伍不存在、无权限、删除失败等情况抛出
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteTeam(long id, User loginUser) {
@@ -404,7 +463,6 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
         return userTeamService.count(userTeamQueryWrapper);
     }
 }
-
 
 
 

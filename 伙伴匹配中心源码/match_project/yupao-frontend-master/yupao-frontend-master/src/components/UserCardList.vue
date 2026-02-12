@@ -18,6 +18,13 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * 模块用途：用户卡片列表组件，用于在首页/搜索结果页以卡片形式展示用户信息。
+ *
+ * 交互：点击“联系我”弹出 Dialog 展示手机号与邮箱。
+ *
+ * 数据来源：props.userList（来自页面接口返回，例如 GET /user/recommend、GET /user/search/tags、GET /user/match）。
+ */
 import {Dialog} from "vant";
 import {UserType} from "../models/user";
 
@@ -32,6 +39,15 @@ const props = withDefaults(defineProps<UserCardListProps>(), {
   userList: [] as UserType[],
 });
 
+/**
+ * 展示用户联系方式弹窗。
+ *
+ * 交互：用户点击卡片按钮触发；使用 Dialog.alert 弹出联系方式。
+ *
+ * 数据来源：user.phone 与 user.email 来自 props.userList。
+ *
+ * @param user 当前卡片对应的用户
+ */
 const showContact = (user: UserType) => {
   const phone = user.phone || "暂无";
   const email = user.email || "暂无";

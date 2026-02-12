@@ -7,12 +7,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /**
  * 跨域配置
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author Ethan
  */
 @Configuration
 public class WebMvcConfg implements WebMvcConfigurer {
 
+    /**
+     * 配置后端接口的跨域规则。
+     *
+     * @param registry 跨域注册器（用于添加允许跨域的路径、来源、方法等配置）
+     */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         //设置允许跨域的路径

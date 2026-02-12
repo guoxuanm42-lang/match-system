@@ -8,10 +8,9 @@ import org.springframework.util.StopWatch;
 import javax.annotation.Resource;
 
 /**
- * 导入用户任务
+ * 导入用户任务（用于批量插入测试数据）。
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author Ethan
  */
 @Component
 public class InsertUsers {
@@ -20,7 +19,7 @@ public class InsertUsers {
     private UserMapper userMapper;
 
     /**
-     * 批量插入用户
+     * 批量插入用户（测试用）。
      */
 //    @Scheduled(initialDelay = 5000, fixedRate = Long.MAX_VALUE)
     public void doInsertUsers() {

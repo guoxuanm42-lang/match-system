@@ -4,14 +4,15 @@ import com.yupi.yupao.common.PageRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 
 /**
  * 队伍查询封装类
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author Ethan
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -19,6 +20,7 @@ public class TeamQuery extends PageRequest {
     /**
      * id
      */
+    @Min(value = 1, message = "id 必须大于等于 1")
     private Long id;
 
     /**
@@ -44,15 +46,20 @@ public class TeamQuery extends PageRequest {
     /**
      * 最大人数
      */
+    @Min(value = 1, message = "maxNum 必须大于等于 1")
+    @Max(value = 20, message = "maxNum 必须小于等于 20")
     private Integer maxNum;
 
     /**
      * 用户id
      */
+    @Min(value = 1, message = "userId 必须大于等于 1")
     private Long userId;
 
     /**
      * 0 - 公开，1 - 私有，2 - 加密
      */
+    @Min(value = 0, message = "status 不合法")
+    @Max(value = 2, message = "status 不合法")
     private Integer status;
 }

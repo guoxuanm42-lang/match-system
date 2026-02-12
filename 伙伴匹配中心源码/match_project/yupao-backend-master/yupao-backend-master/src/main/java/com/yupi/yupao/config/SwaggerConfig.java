@@ -13,16 +13,20 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 /**
- * 自定义 Swagger 接口文档的配置
+ * Swagger 接口文档配置（仅在 dev / test 环境启用）。
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author Ethan
  */
 @Configuration
 @EnableSwagger2WebMvc
 @Profile({"dev", "test"})
 public class SwaggerConfig {
 
+    /**
+     * 创建 Swagger Docket（扫描 controller 包生成接口文档）。
+     *
+     * @return Swagger Docket
+     */
     @Bean(value = "defaultApi2")
     public Docket defaultApi2() {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -34,11 +38,10 @@ public class SwaggerConfig {
                 .build();
     }
 
-    // [加入编程导航](https://t.zsxq.com/0emozsIJh) 深耕编程提升【两年半】、国内净值【最高】的编程社群、用心服务【20000+】求学者、帮你自学编程【不走弯路】
-
     /**
-     * api 信息
-     * @return
+     * 构建 Swagger 的基础信息。
+     *
+     * @return ApiInfo
      */
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()

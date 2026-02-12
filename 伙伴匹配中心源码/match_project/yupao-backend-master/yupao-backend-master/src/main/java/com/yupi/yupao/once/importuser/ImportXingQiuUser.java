@@ -10,11 +10,15 @@ import java.util.stream.Collectors;
 /**
  * 导入星球用户到数据库
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author Ethan
  */
 public class ImportXingQiuUser {
 
+    /**
+     * 分析 Excel 数据并输出重复昵称信息（示例入口）。
+     *
+     * @param args 启动参数
+     */
     public static void main(String[] args) {
         // todo 记得改为自己的测试文件
         String fileName = "E:\\星球项目\\yupao-backend\\src\\main\\resources\\prodExcel.xlsx";

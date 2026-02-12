@@ -2,24 +2,33 @@ package com.yupi.yupao.model.request;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
  * 用户注册请求体
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author Ethan
  */
 @Data
 public class UserRegisterRequest implements Serializable {
 
     private static final long serialVersionUID = 3191241716373120793L;
 
+    @NotBlank(message = "账号不能为空")
+    @Size(min = 4, max = 256, message = "账号长度不合法")
     private String userAccount;
 
+    @NotBlank(message = "密码不能为空")
+    @Size(min = 8, max = 256, message = "密码长度不合法")
     private String userPassword;
 
+    @NotBlank(message = "确认密码不能为空")
+    @Size(min = 8, max = 256, message = "确认密码长度不合法")
     private String checkPassword;
 
+    @NotBlank(message = "星球编号不能为空")
+    @Size(max = 5, message = "星球编号长度不合法")
     private String planetCode;
 }

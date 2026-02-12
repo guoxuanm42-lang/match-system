@@ -1,10 +1,9 @@
 package com.yupi.yupao.constant;
 
 /**
- * 用户常量
+ * 用户常量（放一些全局会用到的固定值）。
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author Ethan
  */
 public interface UserConstant {
 

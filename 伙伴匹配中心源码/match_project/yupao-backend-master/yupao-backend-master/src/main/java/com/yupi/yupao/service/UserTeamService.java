@@ -4,10 +4,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.yupi.yupao.model.domain.UserTeam;
 
 /**
- * 用户队伍服务
+ * 用户队伍服务（用于维护用户与队伍的关联关系）。
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author Ethan
  */
 public interface UserTeamService extends IService<UserTeam> {
 

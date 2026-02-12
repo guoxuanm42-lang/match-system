@@ -11,8 +11,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Redisson 配置
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author Ethan
  */
 @Configuration
 @ConfigurationProperties(prefix = "spring.redis")
@@ -23,6 +22,11 @@ public class RedissonConfig {
 
     private String port;
 
+    /**
+     * 创建 RedissonClient Bean（用于分布式锁等能力）。
+     *
+     * @return Redisson 客户端
+     */
     @Bean
     public RedissonClient redissonClient() {
         // 1. 创建配置

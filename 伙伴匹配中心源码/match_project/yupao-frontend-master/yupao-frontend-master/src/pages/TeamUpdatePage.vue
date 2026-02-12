@@ -63,7 +63,13 @@
 </template>
 
 <script setup lang="ts">
-
+/**
+ * 模块用途：更新队伍页，加载既有队伍信息并提交更新。
+ *
+ * 交互：页面进入时按 route.query.id 拉取队伍详情；用户提交后更新队伍信息并跳回队伍大厅，失败时 Toast 提示。
+ *
+ * 数据来源：route.query.id；后端 GET /team/get 获取详情；POST /team/update 提交更新。
+ */
 import {useRoute, useRouter} from "vue-router";
 import {onMounted, ref} from "vue";
 import myAxios from "../plugins/myAxios";
@@ -77,14 +83,22 @@ const showPicker = ref(false);
 
 const minDate = new Date();
 
-const id = route.query.id;
+const id = Number(route.query.id ?? 0);
 
 // 需要用户填写的表单数据
-const addTeamData = ref({})
+const addTeamData = ref<Record<string, any>>({})
 
-// 获取之前的队伍信息
-onMounted(async () => {
-  if (id <= 0) {
+/**
+ * 加载队伍详情用于回显表单。
+ *
+ * 交互：页面进入时触发；失败 Toast 提示。
+ *
+ * 数据来源：route.query.id；后端 GET /team/get。
+ *
+ * @returns Promise<void>
+ */
+const loadTeam = async () => {
+  if (!id || Number.isNaN(id) || id <= 0) {
     Toast.fail('加载队伍失败');
     return;
   }
@@ -97,10 +111,23 @@ onMounted(async () => {
     addTeamData.value = res.data;
   } else {
     Toast.fail('加载队伍失败，请刷新重试');
-  }}
-)
+  }
+}
 
-// 提交
+// 获取之前的队伍信息
+onMounted(async () => {
+  await loadTeam();
+})
+
+/**
+ * 提交队伍更新表单。
+ *
+ * 交互：用户点击提交触发；成功 Toast 并跳转 /team；失败 Toast 提示。
+ *
+ * 数据来源：表单数据 addTeamData；后端 POST /team/update。
+ *
+ * @returns Promise<void>
+ */
 const onSubmit = async () => {
   const postData = {
     ...addTeamData.value,

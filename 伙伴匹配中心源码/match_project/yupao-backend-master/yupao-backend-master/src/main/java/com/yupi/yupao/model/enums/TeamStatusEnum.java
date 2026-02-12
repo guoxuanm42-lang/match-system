@@ -3,8 +3,7 @@ package com.yupi.yupao.model.enums;
 /**
  * 队伍状态枚举
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author Ethan
  */
 public enum TeamStatusEnum {
 
@@ -16,8 +15,12 @@ public enum TeamStatusEnum {
 
     private String text;
 
-    // 原_创 [鱼_皮](https://github.com/liyupi)
-
+    /**
+     * 根据 value 获取对应的枚举值。
+     *
+     * @param value 状态值（0 公开 / 1 私有 / 2 加密）
+     * @return 对应的枚举；找不到则返回 null
+     */
     public static TeamStatusEnum getEnumByValue(Integer value) {
         if (value == null) {
             return null;
@@ -36,18 +39,38 @@ public enum TeamStatusEnum {
         this.text = text;
     }
 
+    /**
+     * 获取状态值。
+     *
+     * @return 状态值
+     */
     public int getValue() {
         return value;
     }
 
+    /**
+     * 设置状态值。
+     *
+     * @param value 状态值
+     */
     public void setValue(int value) {
         this.value = value;
     }
 
+    /**
+     * 获取状态文本。
+     *
+     * @return 状态文本
+     */
     public String getText() {
         return text;
     }
 
+    /**
+     * 设置状态文本。
+     *
+     * @param text 状态文本
+     */
     public void setText(String text) {
         this.text = text;
     }

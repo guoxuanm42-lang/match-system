@@ -22,8 +22,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * 缓存预热任务
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author Ethan
  */
 @Component
 @Slf4j
@@ -41,7 +40,11 @@ public class PreCacheJob {
     // 重点用户
     private List<Long> mainUserList = Arrays.asList(1L);
 
-    // 每天执行，预热推荐用户
+    /**
+     * 预热推荐用户缓存任务（定时执行）。
+     *
+     * <p>用途：提前把“推荐用户列表”写入 Redis，避免用户第一次打开推荐页时查询变慢。</p>
+     */
     @Scheduled(cron = "0 31 0 * * *")
     public void doCacheRecommendUser() {
         RLock lock = redissonClient.getLock("yupao:precachejob:docache:lock");
