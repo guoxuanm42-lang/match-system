@@ -88,6 +88,9 @@ public class UserController {
             return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
         User user = userService.userLogin(userAccount, userPassword, request);
+        if (user == null) {
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR, "账号或密码错误");
+        }
         return ResultUtils.success(user);
     }
 

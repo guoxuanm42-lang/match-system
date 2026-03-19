@@ -20,8 +20,13 @@ type MyAxiosInstance = Omit<AxiosInstance, 'get' | 'post'> & {
 
 const isDev = import.meta.env.DEV;
 
+const devBaseURL =
+  typeof window === 'undefined'
+    ? 'http://localhost:8080/api'
+    : `${window.location.protocol}//${window.location.hostname}:8080/api`;
+
 const myAxios = axios.create({
-    baseURL: isDev ? 'http://localhost:8080/api' : '线上地址',
+    baseURL: isDev ? devBaseURL : '线上地址',
 }) as MyAxiosInstance;
 
 myAxios.defaults.withCredentials = true; // 配置为true

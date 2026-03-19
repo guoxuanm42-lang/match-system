@@ -55,6 +55,12 @@ const isActive = (path: string) => {
   padding: 24px 20px 28px;
 }
 
+.page-container {
+  width: 100%;
+  max-width: clamp(520px, 66vw, 980px);
+  margin: 0 auto;
+}
+
 .top-header {
   position: sticky;
   top: 0;

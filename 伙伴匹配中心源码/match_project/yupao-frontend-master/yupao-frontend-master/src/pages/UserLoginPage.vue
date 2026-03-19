@@ -61,18 +61,27 @@ const userPassword = ref('');
  * @returns Promise<void>
  */
 const onSubmit = async () => {
-  const res = await myAxios.post('/user/login', {
-    userAccount: userAccount.value,
-    userPassword: userPassword.value,
-  })
-  console.log(res, '用户登录');
-  if (res.code === 0 && res.data) {
-    Toast.success('登录成功');
-    // 跳转到之前的页面
-    const redirectUrl = route.query?.redirect as string ?? '/';
-    window.location.href = redirectUrl;
-  } else {
-    Toast.fail('登录失败');
+  try {
+    const res = await myAxios.post('/user/login', {
+      userAccount: userAccount.value,
+      userPassword: userPassword.value,
+    })
+    console.log(res, '用户登录');
+    if (res.code === 0 && res.data) {
+      Toast.success('登录成功');
+      const redirectQuery = route.query?.redirect;
+      const redirectUrl = String(Array.isArray(redirectQuery) ? redirectQuery[0] : (redirectQuery ?? '/'));
+      if (!redirectUrl || redirectUrl.includes('/user/login')) {
+        window.location.href = '/';
+        return;
+      }
+      window.location.href = redirectUrl;
+      return;
+    }
+    Toast.fail(res?.description || '登录失败');
+  } catch (e) {
+    console.error(e);
+    Toast.fail('登录失败，请检查后端是否启动或网络是否正常');
   }
 };
 
